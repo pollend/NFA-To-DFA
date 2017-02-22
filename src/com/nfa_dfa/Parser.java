@@ -53,10 +53,10 @@ public class Parser {
             if(!IsInEpsilon(symbol))
                 throw new RuntimeException("symbol not in epsilon: " + symbol);
 
-            if(IsPossibleAcceptState(currentState))
+            if(!IsPossibleState(currentState))
                 throw new RuntimeException("state not possible: " + currentState);
 
-            if(IsPossibleAcceptState(next))
+            if(!IsPossibleState(next))
                 throw new RuntimeException("state not possible: " + next);
 
             Map<String, List<String>> lookup = transition.putIfAbsent(currentState, new HashMap<>());
