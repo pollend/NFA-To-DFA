@@ -3,9 +3,7 @@ package com.nfa_dfa;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -27,9 +25,27 @@ public class Main {
 
     }
 
-    public static String[] TestSpace(String state,String symbol,List<String> visit)
+    public static void Visit(Parser p,String state,String symbol,HashMap<String,Integer> visit)
     {
-        return  new String[]{};
+        if(visit.containsKey(state) )
+        {
+            Integer count = visit.get(symbol);
+            visit.put(state, ++count);
+            if(count == 2)
+                return;
+        }
+        else
+            visit.put(symbol, 1);
+
+
+        Iterator<String> iter = p.GetTransitions(state, symbol);
+        for (Iterator<String> it = iter; it.hasNext(); ) {
+            String nextState = it.next();
+            Main.Visit(p,nextState,symbol,visit);
+
+        }
+
     }
+
 
 }
