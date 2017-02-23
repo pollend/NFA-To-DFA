@@ -6,14 +6,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by michaelpollind on 2/21/17.
- */
-enum  TransitionType{
-    NORMAL,
-    EPSILON
-}
-
 public class Parser {
 
 
@@ -21,7 +13,7 @@ public class Parser {
     private String[] possibleStates;
     private String[] acceptedStates;
     private String[] epsilonClosure;
-    private Map<String, Map<String,List<String>>> transition = new HashMap<>();
+    private HashMap<String, HashMap<String,List<String>>> transition = new HashMap<>();
 
     public  Parser(String path) throws FileNotFoundException {
         File file = new File(path);
@@ -40,6 +32,10 @@ public class Parser {
         acceptedStates = scanner.nextLine().trim().split("\t");
 
         Pattern p = Pattern.compile("([a-zA-Z]+),([a-zA-Z]+)=([a-zA-Z]+)");
+
+        for (String state : possibleStates) {
+            transition.put(state,new HashMap<String, List<String>>());
+        }
         while (scanner.hasNext())
         {
             String line = scanner.nextLine().replaceAll("\\s","").trim();
@@ -50,47 +46,18 @@ public class Parser {
             String symbol = match.group(2);
             String next = match.group(3);
 
-            if(!IsInEpsilon(symbol))
-                throw new RuntimeException("symbol not in epsilon: " + symbol);
+            Map<String,List<String>> lookup = transition.get(currentState);
 
-            if(!IsPossibleState(currentState))
-                throw new RuntimeException("state not possible: " + currentState);
+            List<String> tr = null;
+            if(!lookup.containsKey(symbol))
+                tr = lookup.put(symbol, new ArrayList<String>());
+            else tr = lookup.get(symbol);
 
-            if(!IsPossibleState(next))
-                throw new RuntimeException("state not possible: " + next);
-
-            Map<String, List<String>> lookup = transition.putIfAbsent(currentState, new HashMap<>());
-            List<String> tr =  lookup.putIfAbsent(symbol,new ArrayList<>());
             tr.add(next);
 
         }
     }
 
-    public boolean IsInEpsilon(String c)
-    {
-        for (String ep : epsilonClosure) {
-            if (ep.equals(c))
-                return true;
-        }
-        return  false;
-    }
-
-    public  boolean IsPossibleState(String c)
-    {
-        for (String ep : possibleStates) {
-            if (ep.equals(c))
-                return true;
-        }
-        return  false;
-    }
-    public  boolean IsPossibleAcceptState(String c)
-    {
-        for (String ep : acceptedStates) {
-            if (ep.equals(c))
-                return true;
-        }
-        return  false;
-    }
 
     public Iterator<String> GetTransitions(String state,String symbol)
     {
@@ -105,6 +72,17 @@ public class Parser {
         return  startingState;
     }
 
+    public  String[] PossibleStates(){
+        return possibleStates;
+    }
+
+    public  String[] AcceptedStates(){
+        return acceptedStates;
+    }
+
+    public String[] EpsilonClosure(){
+        return  epsilonClosure;
+    }
 
 
 
