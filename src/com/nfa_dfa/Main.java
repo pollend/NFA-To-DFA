@@ -37,7 +37,9 @@ public class Main {
                     transitions.add(key);
                     StateToTest.add(visits.toArray(new String[visits.size()]));
                 }
+                if(test.length > 0)
                 state.add(test);
+                if(visits.size()> 0)
                 state.add(visits.toArray(new String[visits.size()]));
 
             }
@@ -55,7 +57,7 @@ public class Main {
 
         try {
             FileWriter writer = new FileWriter(f2);
-            writer.write(Arrays.stream(p.PossibleStates()).collect(Collectors.joining("\t")) + "\n");     //write states
+            writer.write(state.stream().map(j -> GroupTokens(Arrays.stream(j))).collect(Collectors.joining("\t")) + "\n");     //write states
             writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");  //write epsilon closures 
             writer.write(p.StartingState() + "\n"); //write start state
             writer.write(Arrays.stream(p.AcceptedStates()).collect(Collectors.joining("\t")) + "\n");  //write Accept States
