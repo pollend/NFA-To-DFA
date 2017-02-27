@@ -19,11 +19,11 @@ public class Main {
         List<String[]> StateToTest = new ArrayList<>();
 
         HashSet<String[]> state = new HashSet<>();
-        HashSet<String> transitions = new HashSet<>();
+        HashSet<String> transitions = new HashSet<>(); 
 
-
+        //add starting state to list
         StateToTest.add(new String[]{p.StartingState()});
-
+         //do conversion
         while (StateToTest.size() > 0) {
             String[] test = StateToTest.get(0);
 
@@ -45,7 +45,7 @@ public class Main {
         }
 
 
-
+        //create file 
         File f2  = new File("test.dfa");
         try {
             f2.createNewFile();
@@ -55,10 +55,12 @@ public class Main {
 
         try {
             FileWriter writer = new FileWriter(f2);
-           // writer.write(state.stream().collect(Collectors.joining("\t")) + "\n");
-           // writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");
+            writer.write(state.stream().collect(Collectors.joining("\t")) + "\n");     //write states
+            writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");  //write epsilon closures 
+            writer.write(state.stream(p.StartingStates()).collect(Collectors.joining("\t")) + "\n"); //write start state
+            writer.write(Arrays.stream(p.AcceptedStates()).collect(Collect.joining("\t")) + "\n");  //write Accept States
 
-            for (String transition:transitions) {
+            for (String transition:transitions) {   //write transitions
                 writer.write(transition + "\n");
             }
             writer.close();
@@ -68,7 +70,7 @@ public class Main {
 
 
     }
-
+    //this method finds duplicates and then adds it to result
     public  static List<String[]> FindMatching(HashSet<String[]> states,String matchToken)
     {
         List<String[]> result = new ArrayList<>();
@@ -93,7 +95,7 @@ public class Main {
     public static String ConvertToHashKey(Stream<String> states, String key, Stream<String> to) {
         return GroupTokens(states) + "," + key + "=" + GroupTokens(to);
     }
-
+    //keep track of what is visited 
     public static void Visit(Parser p, String state, String symbol, HashSet<String> visit, boolean start) {
         if (!start) {
             if (visit.contains(state))
