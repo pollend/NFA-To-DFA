@@ -55,10 +55,10 @@ public class Main {
 
         try {
             FileWriter writer = new FileWriter(f2);
-            writer.write(state.stream().collect(Collectors.joining("\t")) + "\n");     //write states
+            writer.write(Arrays.stream(p.PossibleStates()).collect(Collectors.joining("\t")) + "\n");     //write states
             writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");  //write epsilon closures 
-            writer.write(state.stream(p.StartingStates()).collect(Collectors.joining("\t")) + "\n"); //write start state
-            writer.write(Arrays.stream(p.AcceptedStates()).collect(Collect.joining("\t")) + "\n");  //write Accept States
+            writer.write(p.StartingState() + "\n"); //write start state
+            writer.write(Arrays.stream(p.AcceptedStates()).collect(Collectors.joining("\t")) + "\n");  //write Accept States
 
             for (String transition:transitions) {   //write transitions
                 writer.write(transition + "\n");
@@ -67,6 +67,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
     }
