@@ -16,35 +16,34 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Parser p = new Parser("test.nfa");
 
-        List<String[]> StateToTest = new ArrayList<>();
+        Queue<String[]> StateToTest = new LinkedList<>();
 
         HashSet<String[]> state = new HashSet<>();
         HashSet<String> transitions = new HashSet<>(); 
+
 
         //add starting state to list
         StateToTest.add(new String[]{p.StartingState()});
          //do conversion
         while (StateToTest.size() > 0) {
-            String[] test = StateToTest.get(0);
+            String[] test = StateToTest.remove();
 
             for (String c : p.EpsilonClosure()) {
                 HashSet<String> visits = new HashSet<>();
                 for (int x = 0; x < test.length; x++) {
-                    Main.Visit(p, test[0], c, visits, true);
+                    Main.Visit(p, test[x], c, visits, true);
+
                 }
                 String key = ConvertToHashKey(Arrays.stream(test), c, visits.stream());
                 if (!transitions.contains(key)) {
                     transitions.add(key);
                     StateToTest.add(visits.toArray(new String[visits.size()]));
                 }
-                if(test.length > 0)
                 state.add(test);
-                if(visits.size()> 0)
                 state.add(visits.toArray(new String[visits.size()]));
 
 
             }
-            StateToTest.remove(0);
         }
 
 
@@ -60,7 +59,7 @@ public class Main {
             FileWriter writer = new FileWriter(f2);
 
 
-            writer.write(state.stream().map(j -> GroupTokens(Arrays.stream(j))).collect(Collectors.joining("\t")) + "\n");     //write states
+            writer.write(state.stream().map(j -> GroupTokens(Arrays.stream(j))).distinct().collect(Collectors.joining("\t")) + "\n");     //write states
             writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");  //write epsilon closures 
             writer.write("{"+p.StartingState() + "}\n"); //write start state
             writer.write(state.stream().filter(j -> Arrays.stream(j).anyMatch(r -> Arrays.asList(p.AcceptedStates()).contains(r))).map(x -> GroupTokens(Arrays.stream(x))).distinct().collect(Collectors.joining("\t")) + "\n");  //write Accept States

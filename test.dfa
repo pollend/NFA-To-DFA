@@ -1,14 +1,22 @@
-{e}	{a, b, c, d, e}	{d, e}	{d, e}	{a}	{a, b, c, d, e}	{e}	{e}	{d, e}	{d, e}	{a, b, c, d, e}	{d, e}	{a, b, c, d, e}	{a, b, c, d, e}
+{}	{e}	{b, e}	{a, b, c, d, e}	{c}	{d, e}	{b, d, e}	{c, e}	{a}
 1	0
 {a}
-{e}	{a, b, c, d, e}	{d, e}
-{e},1={}
+{e}	{b, e}	{a, b, c, d, e}	{d, e}	{b, d, e}	{c, e}
+{c, e},1={b, e}
+{b, e},0={c}
 {a},0={a, b, c, d, e}
 {d, e},1={}
+{a, b, c, d, e},1={b, d, e}
 {a},1={d, e}
+{b, d, e},1={e}
+{c},1={b, e}
+{b, d, e},0={c, e}
+{c},0={}
+{c, e},0={}
+{e},1={}
+{b, e},1={e}
 {},0={}
 {},1={}
 {d, e},0={e}
 {a, b, c, d, e},0={a, b, c, d, e}
-{a, b, c, d, e},1={d, e}
 {e},0={}
