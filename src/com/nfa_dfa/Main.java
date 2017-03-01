@@ -1,3 +1,4 @@
+package src.com.nfa_dfa;
 
 import javax.swing.plaf.nimbus.State;
 import java.io.File;
@@ -12,10 +13,10 @@ import java.util.stream.Stream;
 public class Main {
     
     public static void main(String[] args) throws FileNotFoundException {
-        String firstArg =" ";
-        if(args.length > 0);{
+        String firstArg ="test.dfa";
+      /*  if(args.length > 0);{
             firstArg = args[0];
-        }
+        }*/
         
         Parser p = new Parser(firstArg);
         Queue<String[]> StateToTest = new LinkedList<>();
@@ -29,12 +30,12 @@ public class Main {
         //do conversion
         while (StateToTest.size() > 0) {
             String[] test = StateToTest.remove();
-            
+
             for (String c : p.EpsilonClosure()) {
                 HashSet<String> visits = new HashSet<>();
                 for (int x = 0; x < test.length; x++) {
                     Main.Visit(p, test[x], c, visits, true);
-                    
+
                 }
                 String key = ConvertToHashKey(Arrays.stream(test), c, visits.stream());
                 if (!transitions.contains(key)) {

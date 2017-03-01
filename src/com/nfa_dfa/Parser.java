@@ -1,4 +1,4 @@
-
+package src.com.nfa_dfa;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,16 +15,29 @@ public class Parser {
     private String[] epsilonClosure;
     private String[] dfaState = new String[10];
     private HashMap<String, HashMap<String,List<String>>> transition = new HashMap<>();
-    
+
+    private String[]  GetEntries(String row){
+        Pattern lookup = Pattern.compile("\\{(?:[a-zA-Z]+\\s*,*\\s*)*\\}|[a-zAz]+");
+        Matcher matches = lookup.matcher(row);
+        List<String> entries = new ArrayList<>();
+        while(matches.find())
+        {
+            entries.add(matches.group().trim().replaceAll("\\s",""));
+        }
+        return entries.toArray(new String[entries.size()]);
+    }
+
     public  Parser(String path) throws FileNotFoundException {
         File file = new File(path);
         Scanner scanner = new Scanner(file);
+
+        GetEntries(scanner.nextLine().trim());
+
+        if(!scanner.hasNext()) throw new RuntimeException("illegal file");
+        possibleStates = GetEntries(scanner.nextLine());//scanner.nextLine().trim().split("\\s+");
         
         if(!scanner.hasNext()) throw new RuntimeException("illegal file");
-        possibleStates = scanner.nextLine().trim().split("\\s+");
-        
-        if(!scanner.hasNext()) throw new RuntimeException("illegal file");
-        epsilonClosure = scanner.nextLine().trim().split("\\s+");
+        epsilonClosure = GetEntries(scanner.nextLine());//scanner.nextLine().trim().split("\\s+");
         
         if(!scanner.hasNext()) throw new RuntimeException("illegal file");
         startingState =  scanner.nextLine().trim();
