@@ -13,7 +13,6 @@ public class Parser {
     private String[] possibleStates;
     private String[] acceptedStates;
     private String[] epsilonClosure;
-    private String[] dfaState = new String[10];
     private HashMap<String, HashMap<String,List<String>>> transition = new HashMap<>();
 
     private String[]  GetEntries(String row){
@@ -31,8 +30,6 @@ public class Parser {
         File file = new File(path);
         Scanner scanner = new Scanner(file);
 
-        GetEntries(scanner.nextLine().trim());
-
         if(!scanner.hasNext()) throw new RuntimeException("illegal file");
         possibleStates = GetEntries(scanner.nextLine());//scanner.nextLine().trim().split("\\s+");
         
@@ -40,12 +37,12 @@ public class Parser {
         epsilonClosure = GetEntries(scanner.nextLine());//scanner.nextLine().trim().split("\\s+");
         
         if(!scanner.hasNext()) throw new RuntimeException("illegal file");
-        startingState =  scanner.nextLine().trim();
+        startingState =  scanner.nextLine().replaceAll("\\s","");
         
         if(!scanner.hasNext()) throw new RuntimeException("illegal file");
-        acceptedStates = scanner.nextLine().trim().split("\\s+");
+        acceptedStates = GetEntries(scanner.nextLine());
         
-        Pattern p = Pattern.compile("([a-zA-Z0-9{,}]+),([a-zA-Z0-9]+)=([a-zA-Z0-9{,}]+)");
+        Pattern p = Pattern.compile("([a-zA-Z0-9{,} ]+),([a-zA-Z0-9]+)=([a-zA-Z0-9{,} ]+)");
         
         for (String state : possibleStates) {
             transition.put(state,new HashMap<String, List<String>>());
@@ -59,9 +56,9 @@ public class Parser {
             match.find();
             if(!match.hitEnd() && match.groupCount() != 3)
                 throw new RuntimeException("unknown transition: " + line);
-            String currentState = match.group(1);
+            String currentState = match.group(1).replaceAll("\\s","");
             String symbol = match.group(2);
-            String next = match.group(3);
+            String next = match.group(3).replaceAll("\\s","");
             
             Map<String,List<String>> lookup = transition.get(currentState);
             if(lookup == null) {
@@ -106,10 +103,6 @@ public class Parser {
     public String[] EpsilonClosure(){
         return  epsilonClosure;
     }
-    
-    public String[] DFAState(){
-        return dfaState;
-    }
-    
+
     
 }

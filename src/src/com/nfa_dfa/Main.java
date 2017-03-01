@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    
+
+    public  static String endState = "";
+
     public static void main(String[] args) throws FileNotFoundException {
         String firstArg ="test.dfa";
       /*  if(args.length > 0);{
@@ -64,7 +66,11 @@ public class Main {
             
             writer.write(state.stream().map(j -> GroupTokens(Arrays.stream(j))).distinct().collect(Collectors.joining("\t")) + "\n");     //write states
             writer.write(Arrays.stream(p.EpsilonClosure()).collect(Collectors.joining("\t")) + "\n");  //write sigma
-            writer.write("{" + p.StartingState()+ "," + p.DFAState()[++count] + "} \n"); //write start state
+            if(endState.equals(""))
+                writer.write("{" + p.StartingState()+ "}"); //write start state
+            else
+                writer.write("{" + p.StartingState()+","+endState+ "}"); //write start state
+
             writer.write(state.stream().filter(j -> Arrays.stream(j).anyMatch(r -> Arrays.asList(p.AcceptedStates()).contains(r))).map(x -> GroupTokens(Arrays.stream(x))).distinct().collect(Collectors.joining("\t")) + "\n");  //write Accept States
             
             for (String transition:transitions) {   //write transitions
@@ -113,14 +119,11 @@ public class Main {
         }
         
         Iterator<String> iter2 = p.GetTransitions(state, "EPS");
-        int count= 0;
         if (iter2 != null) {
             for (Iterator<String> it = iter2; it.hasNext(); ) {
                 String nextState = it.next();
-                p.DFAState()[count] = nextState;
-                
                 Main.Visit(p, nextState, symbol, visit, false);
-                count++;
+                endState = nextState;
             }
             
         }
